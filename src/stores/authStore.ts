@@ -19,13 +19,14 @@ interface JwtPayload {
 }
 
 const useAuthStore = create<UserState>((set) => ({
-  token: null,
+  token: localStorage.getItem("token") || null,
   id: null,
   username: null,
   permissions: [],
   error: null,
   login: (token: string) => {
     set({ token });
+    localStorage.setItem("token", token);
     const decodedToken = jwtDecode<JwtPayload>(token);
     set({
       id: decodedToken.id,
@@ -34,7 +35,10 @@ const useAuthStore = create<UserState>((set) => ({
     });
   },
   setError: (error: string | null) => set({ error }),
-  logout: () => set({ token: null, permissions: [], error: null }),
+  logout: () => {
+    set({ token: null, permissions: [], error: null });
+    localStorage.removeItem("token");
+  },
 }));
 
 export default useAuthStore;
