@@ -1,13 +1,14 @@
 import useAuthStore from "../stores/authStore";
 import { login as loginService } from "../services/authService";
 import { AxiosError } from "axios";
-import { Form, Input, Button, Typography, Row, Col, Alert } from "antd";
+import { Form, Input, Button, Typography, Row, Col } from "antd";
+import Notification from "./Notification";
 
 const LoginForm = () => {
-  const { login, setError, error } = useAuthStore();
+  const { login, setNotification, clearNotification } = useAuthStore();
 
   const onFinish = async (values: { username: string; password: string }) => {
-    setError("");
+    clearNotification();
     const { username, password } = values;
     try {
       const token = await loginService({ username, password });
@@ -17,10 +18,11 @@ const LoginForm = () => {
       let errorMessage = "An unknown error occurred";
 
       if (error instanceof AxiosError) {
-        errorMessage = error.response?.data.error || "An unknown error occurred";
+        errorMessage =
+          error.response?.data.error || "An unknown error occurred";
       }
 
-      setError(errorMessage);
+      setNotification("error", errorMessage);
     }
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -48,20 +50,25 @@ const LoginForm = () => {
             size="large"
           >
             <Form.Item
-              
               name="username"
               rules={[
-                { required: true, message: "Really? You don't have a username?" },
+                {
+                  required: true,
+                  message: "Really? You don't have a username?",
+                },
               ]}
             >
               <Input placeholder="Username" />
             </Form.Item>
 
             <Form.Item
-              
               name="password"
               rules={[
-                { required: true, message: "Have you ever logged into an app without a password?" },
+                {
+                  required: true,
+                  message:
+                    "Have you ever logged into an app without a password?",
+                },
               ]}
             >
               <Input.Password placeholder="Password" />
@@ -88,20 +95,12 @@ const LoginForm = () => {
         </Col>
       </Row>
       <Row justify={"center"}>
-      {error && (
-            <Alert
-            
-              message="Error"
-              description={ error }
-              type="error"
-              showIcon
-              closable
-              onClose={() => setError("")} // Limpiar el error al cerrar la alerta
-            />
-          )}
+        <Notification />
       </Row>
       <Row justify="center">
-      <Typography.Text>Forgot my password</Typography.Text>
+        <Typography.Link style={{ fontSize: "16px" }}>
+          Forgot my password
+        </Typography.Link>
       </Row>
     </>
   );

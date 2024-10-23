@@ -1,11 +1,10 @@
 import { createRoot } from "react-dom/client";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, ThemeConfig } from "antd";
 import App from "./App.tsx";
 
-const themeSettings = {
-  
+const themeSettings: ThemeConfig = {  
    token: {
-    fontFamily: "DM Sans, sans-serif",    
+    fontFamily: "DM Sans, sans-serif",           
   }, 
 };
 

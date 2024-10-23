@@ -10,18 +10,19 @@ import {
 import "./App.css";
 
 function App() {
-  const { token } = useAuthStore();
-
+  const { token, notification } = useAuthStore();
+  const { error }  = notification;
+  
   return (
     <Router>
       <Routes>
         <Route
           path="/login"
-          element={token ? <Navigate to="/dashboard" /> : <LoginForm />}
+          element={token &&!error ? <Navigate to="/dashboard" /> : <LoginForm />}
         />
         <Route
           path="/dashboard"
-          element={token ? <Dashboard /> : <Navigate to="/login" />}
+          element={(token && !error) ? <Dashboard /> : <Navigate to="/login" />}
         />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>      
